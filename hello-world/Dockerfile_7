@@ -1,0 +1,20 @@
+FROM debian:stretch-slim
+
+LABEL maintainer="isuftin@usgs.gov"
+
+RUN apt-get update && \
+      apt-get upgrade -y && \
+      apt-get install nginx -y && \
+      apt-get purge -y --auto-remove && \
+      apt-get clean
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+      && ln -sf /dev/stderr /var/log/nginx/error.log
+
+EXPOSE 80/tcp
+
+STOPSIGNAL SIGTERM
+
+VOLUME ["/var/data/www", "/var/data/images"]
+
+CMD ["nginx", "-g", "daemon off;"]
